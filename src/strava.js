@@ -1,12 +1,3 @@
-const auth_link = "https://www.strava.com/oauth/token"
-
-function fetchData(link){
-  return fetch(link)
-    .then(res => {
-      return res.json();
-    })
-}
-
 function createDropdown(jsonArray, id) {
   const dropdown = document.createElement('select');
   dropdown.multiple = true;
@@ -14,11 +5,10 @@ function createDropdown(jsonArray, id) {
   for (const lap of jsonArray) {
     const option = document.createElement('option');
     option.value = lap.name;
-    option.text = lap.name; // Example text based on the value
+    option.text = lap.name;
     dropdown.appendChild(option);
 }
 dropdown.addEventListener('change', function () {
-    // Get the selected values
     const selectedValues = Array.from(this.selectedOptions, option => option.value);
     let sumTime = 0
     let sumDistance = 0
@@ -35,15 +25,9 @@ return dropdown;
 }
 
 function createDivs(jsonArray, contentDiv, id) {
-  // Loop through the array
   jsonArray.forEach(item => {
-    // Create a div element
     const div = document.createElement('div');
-
-    // Set content or attributes based on JSON properties
     div.innerHTML = `${item.name}: <br> Distance: ${item.distance} <br> Time: ${item.elapsed_time}`;
-
-    // Append the div to the container
     contentDiv.appendChild(div);
   });
   contentDiv.appendChild(createDropdown(jsonArray, id))
@@ -73,12 +57,10 @@ function createAccordionItem(title, contentArray, id) {
     return item;
   }
 
-  // Function to toggle accordion content visibility
   function toggleAccordionContent(contentDiv) {
     contentDiv.style.display = contentDiv.style.display === 'none' ? 'block' : 'none';
   }
 
-  // Function to initialize the accordion
   function initializeAccordion(containerId, data) {
     const accordionContainer = document.getElementById(containerId);
 
@@ -91,46 +73,12 @@ function createAccordionItem(title, contentArray, id) {
     });
   }
 
-  function processArray(res, arrayData) {
-    var segments = [];
-    arrayData.forEach(item => {
-      var type = item.sport_type;
-      if (type == "Run"){
-        const segments_link = `https://www.strava.com/api/v3/activities/${item.id}?access_token=${res.access_token}`
-        var segment = fetchData(segments_link);
-        segments.push(segment);
-      }
-    });
-    return segments;
+function main(){
+    fetch('http://127.0.0.1:5000/api/data')
+      .then(res => res.json())
+        .then(results => {
+              initializeAccordion('accordionContainer', results);
+            })
   }
 
-  function loopActivities(res){
-    const activities_link = `https://www.strava.com/api/v3/athlete/activities?access_token=${res.access_token}`
-    fetchData(activities_link)
-      .then(activities => {
-        Promise.all(processArray(res, activities))
-        .then((results) => {
-          initializeAccordion('accordionContainer', results);
-        })
-      })
-  }
-
-
-function reAuthorize(){
-  fetch(auth_link, {
-    method: 'post',
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      client_id: '117229',
-      client_secret: '5b8c670ec58fcf63de142afae6dc51ee854196a0',
-      refresh_token: 'f2adec1c764e6c9e3b368ad05780a359f54421b3',
-      grant_type: 'refresh_token'
-    })
-  }).then((res) => (res.json()))
-      .then(res => loopActivities(res))
-}
-
-reAuthorize()
+main()
