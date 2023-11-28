@@ -5,11 +5,10 @@ function createDropdown(jsonArray, id) {
   for (const lap of jsonArray) {
     const option = document.createElement('option');
     option.value = lap.name;
-    option.text = lap.name; // Example text based on the value
+    option.text = lap.name;
     dropdown.appendChild(option);
 }
 dropdown.addEventListener('change', function () {
-    // Get the selected values
     const selectedValues = Array.from(this.selectedOptions, option => option.value);
     let sumTime = 0
     let sumDistance = 0
@@ -26,15 +25,9 @@ return dropdown;
 }
 
 function createDivs(jsonArray, contentDiv, id) {
-  // Loop through the array
   jsonArray.forEach(item => {
-    // Create a div element
     const div = document.createElement('div');
-
-    // Set content or attributes based on JSON properties
     div.innerHTML = `${item.name}: <br> Distance: ${item.distance} <br> Time: ${item.elapsed_time}`;
-
-    // Append the div to the container
     contentDiv.appendChild(div);
   });
   contentDiv.appendChild(createDropdown(jsonArray, id))
@@ -64,12 +57,10 @@ function createAccordionItem(title, contentArray, id) {
     return item;
   }
 
-  // Function to toggle accordion content visibility
   function toggleAccordionContent(contentDiv) {
     contentDiv.style.display = contentDiv.style.display === 'none' ? 'block' : 'none';
   }
 
-  // Function to initialize the accordion
   function initializeAccordion(containerId, data) {
     const accordionContainer = document.getElementById(containerId);
 
