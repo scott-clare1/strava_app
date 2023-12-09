@@ -1,3 +1,20 @@
+function minTommss(minutes){
+ var sign = minutes < 0 ? "-" : "";
+ var min = Math.floor(Math.abs(minutes));
+ var sec = Math.floor((Math.abs(minutes) * 60) % 60);
+ return sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
+}
+
+
+function getProjectedFiveKilo(time){
+     return (time * 0.621371) * 5;
+}
+
+function getAverageMinutePerMile(distance, time){
+     return 26.8224 / (distance / time);
+}
+
+
 function createDropdown(jsonArray, id) {
   const dropdown = document.createElement('select');
   dropdown.multiple = true;
@@ -19,7 +36,9 @@ dropdown.addEventListener('change', function () {
       }
     })
     var outputDiv = document.getElementById(id + "_result")
-    outputDiv.innerHTML = 26.8224 / (sumDistance / sumTime);
+    avgTime = getAverageMinutePerMile(sumDistance, sumTime);
+    projectedFiveKm = getProjectedFiveKilo(avgTime);
+    outputDiv.innerHTML = `Average Minute/Mile: ${minTommss(avgTime)} <br> Predicted 5KM: ${minTommss(projectedFiveKm)}`;
 });
 return dropdown;
 }
