@@ -93,7 +93,7 @@ function createAccordionItem(title, contentArray, id) {
   }
 
 function main(){
-    fetch('http://127.0.0.1:5000/api/data')
+    fetch('http://localhost:5000/api/data')
       .then(res => res.json())
         .then(results => {
               initializeAccordion('accordionContainer', results);

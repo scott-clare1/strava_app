@@ -31,8 +31,9 @@ def get_data():
         "grant_type": "refresh_token",
         "f": "json",
     }
-    resposne = requests.post(auth_link, data=payload, verify=False)
-    access_token = resposne.json()["access_token"]
+    response = requests.post(auth_link, data=payload, verify=False)
+    print(response.json())
+    access_token = response.json()["access_token"]
     header = {"Authorization": "Bearer " + access_token}
     activities = fetch_data(f"https://www.strava.com/api/v3/athlete/activities", header)
     activities_detailed = [
@@ -44,4 +45,4 @@ def get_data():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
