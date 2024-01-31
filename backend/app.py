@@ -111,6 +111,7 @@ def read_laps_from_single_activity(activity_id: str):
     laps = db_reader.read_laps_from_single_activity(activity_id)
     return laps
 
-@app.get("api/shutdown")
+@app.get("/api/shutdown")
 def shutdown():
     db_reader.close_cursor().close_connection()
+    return "Closing connections"
