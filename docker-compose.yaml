@@ -1,0 +1,55 @@
+version: "3"
+services:
+  frontend:
+    image: nginx:latest
+    container_name: frontend
+    ports:
+      - "5001:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    depends_on:
+      - backend
+    networks:
+      - custom_network
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - database_upload
+    networks:
+      - custom_network
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    container_name: postgres
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5432:5432"
+    networks:
+      - custom_network
+
+  database_upload:
+    build:
+      context: ./database
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    networks:
+      - custom_network
+
+networks:
+  custom_network:
+    driver: bridge
+
