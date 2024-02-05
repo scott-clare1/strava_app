@@ -39,13 +39,21 @@ class ReadDB:
     DATABASE_URL = f"postgresql://postgres:postgres@postgres/postgres"
 
     def create_connection(self) -> "BuildDB":
-        try:
-            logger.info("Creating Database Connection")
-            self.connection = psycopg2.connect(self.DATABASE_URL)
-            logger.info("Connection Successful")
-        except psycopg2.Error as e:
-            logging.error(f"Error connecting to database: {e}")
-        return self
+        retries: int = 5
+        delay: int = 5
+        while retries > 0:
+            try:
+                logger.info(f"Creating Database Connection to {self.DATABASE_URL}")
+                self.connection = psycopg2.connect(self.DATABASE_URL)
+                logger.info(f"Connection Successful at {self.DATABASE_URL}")
+                return self
+            except psycopg2.OperationalError as e:
+                logging.error(f"Error connecting to database: {e} - retrying in {delay} seconds")
+                retries -= 1
+                time.sleep(delay)
+        else:
+            logging.error(f"Max retries exceeding when attempting to connect to postgres database {self.DATABASE_URL}")
+            raise psycopg2.OperationalError
 
     def create_cursor(self) -> "BuildDB":
         logging.info("Creating Database Cursor Object")

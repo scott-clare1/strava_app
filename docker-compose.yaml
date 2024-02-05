@@ -1,12 +1,11 @@
 version: "3"
 services:
   frontend:
-    image: nginx:latest
+    build:
+      context: ./frontend
     container_name: frontend
     ports:
       - "5001:80"
-    volumes:
-      - ./frontend:/usr/share/nginx/html
     depends_on:
       - backend
     networks:
