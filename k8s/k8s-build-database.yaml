@@ -1,16 +1,11 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: database-upload-deployment
+  name: build-database-job
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: database-upload
   template:
     metadata:
-      labels:
-        app: database-upload
+      name: build-database-job-pod
     spec:
       containers:
         - name: database-upload-container
@@ -31,5 +26,5 @@ spec:
                 secretKeyRef:
                   name: strava-secrets
                   key: refresh_token
-
----
+          restartPolicy: Never
+  backoffLimit: 3
