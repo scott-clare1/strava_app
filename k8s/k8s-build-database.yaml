@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database-upload-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database-upload
+  template:
+    metadata:
+      labels:
+        app: database-upload
+    spec:
+      containers:
+        - name: database-upload-container
+          image: docker.io/strava-database-upload
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+
+---
