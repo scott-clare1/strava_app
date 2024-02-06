@@ -15,8 +15,21 @@ spec:
       containers:
         - name: database-upload-container
           image: docker.io/strava-database-upload
-          volumeMounts:
-            - name: data-volume
-              mountPath: /data
+          env:
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: strava-secrets
+                  key: client-id
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: strava-secrets
+                  key: client-secret
+            - name: REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: strava-secrets
+                  key: refresh_token
 
 ---
